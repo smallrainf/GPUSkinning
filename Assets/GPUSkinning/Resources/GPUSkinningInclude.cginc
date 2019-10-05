@@ -1,26 +1,34 @@
-﻿#ifndef GPUSKINNING_INCLUDE
+﻿// Upgrade NOTE: upgraded instancing buffer 'GPUSkinningProperties0' to new syntax.
+// Upgrade NOTE: upgraded instancing buffer 'GPUSkinningProperties1' to new syntax.
+// Upgrade NOTE: upgraded instancing buffer 'GPUSkinningProperties2' to new syntax.
+
+#ifndef GPUSKINNING_INCLUDE
 #define GPUSKINNING_INCLUDE
 
 uniform sampler2D _GPUSkinning_TextureMatrix;
 uniform float3 _GPUSkinning_TextureSize_NumPixelsPerFrame;
 
-UNITY_INSTANCING_CBUFFER_START(GPUSkinningProperties0)
+UNITY_INSTANCING_BUFFER_START(GPUSkinningProperties0)
 	UNITY_DEFINE_INSTANCED_PROP(float2, _GPUSkinning_FrameIndex_PixelSegmentation)
+#define _GPUSkinning_FrameIndex_PixelSegmentation_arr GPUSkinningProperties0
 #if !defined(ROOTON_BLENDOFF) && !defined(ROOTOFF_BLENDOFF)
 	UNITY_DEFINE_INSTANCED_PROP(float3, _GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade)
+#define _GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade_arr GPUSkinningProperties0
 #endif
-UNITY_INSTANCING_CBUFFER_END
+UNITY_INSTANCING_BUFFER_END(GPUSkinningProperties0)
 
 #if defined(ROOTON_BLENDOFF) || defined(ROOTON_BLENDON_CROSSFADEROOTON) || defined(ROOTON_BLENDON_CROSSFADEROOTOFF)
-UNITY_INSTANCING_CBUFFER_START(GPUSkinningProperties1)
+UNITY_INSTANCING_BUFFER_START(GPUSkinningProperties1)
 	UNITY_DEFINE_INSTANCED_PROP(float4x4, _GPUSkinning_RootMotion)
-UNITY_INSTANCING_CBUFFER_END
+#define _GPUSkinning_RootMotion_arr GPUSkinningProperties1
+UNITY_INSTANCING_BUFFER_END(GPUSkinningProperties1)
 #endif
 
 #if defined(ROOTON_BLENDON_CROSSFADEROOTON) || defined(ROOTOFF_BLENDON_CROSSFADEROOTON)
-UNITY_INSTANCING_CBUFFER_START(GPUSkinningProperties2)
+UNITY_INSTANCING_BUFFER_START(GPUSkinningProperties2)
 	UNITY_DEFINE_INSTANCED_PROP(float4x4, _GPUSkinning_RootMotion_CrossFade)
-UNITY_INSTANCING_CBUFFER_END
+#define _GPUSkinning_RootMotion_CrossFade_arr GPUSkinningProperties2
+UNITY_INSTANCING_BUFFER_END(GPUSkinningProperties2)
 #endif
 
 inline float4 indexToUV(float index)
@@ -43,7 +51,7 @@ inline float4x4 getMatrix(int frameStartIndex, float boneIndex)
 
 inline float getFrameStartIndex()
 {
-	float2 frameIndex_segment = UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_FrameIndex_PixelSegmentation);
+	float2 frameIndex_segment = UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_FrameIndex_PixelSegmentation_arr, _GPUSkinning_FrameIndex_PixelSegmentation);
 	float segment = frameIndex_segment.y;
 	float frameIndex = frameIndex_segment.x;
 	float frameStartIndex = segment + frameIndex * _GPUSkinning_TextureSize_NumPixelsPerFrame.z;
@@ -53,7 +61,7 @@ inline float getFrameStartIndex()
 #if !defined(ROOTON_BLENDOFF) && !defined(ROOTOFF_BLENDOFF)
 inline float getFrameStartIndex_crossFade()
 {
-	float3 frameIndex_segment = UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade);
+	float3 frameIndex_segment = UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade_arr, _GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade);
 	float segment = frameIndex_segment.y;
 	float frameIndex = frameIndex_segment.x;
 	float frameStartIndex = segment + frameIndex * _GPUSkinning_TextureSize_NumPixelsPerFrame.z;
@@ -61,11 +69,11 @@ inline float getFrameStartIndex_crossFade()
 }
 #endif
 
-#define crossFadeBlend UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade).z
+#define crossFadeBlend UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade_arr, _GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade).z
 
-#define rootMotion UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_RootMotion)
+#define rootMotion UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_RootMotion_arr, _GPUSkinning_RootMotion)
 
-#define rootMotion_crossFade UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_RootMotion_CrossFade)
+#define rootMotion_crossFade UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_RootMotion_CrossFade_arr, _GPUSkinning_RootMotion_CrossFade)
 
 #define textureMatrix(uv2, uv3) float frameStartIndex = getFrameStartIndex(); \
 								float4x4 mat0 = getMatrix(frameStartIndex, uv2.x); \
