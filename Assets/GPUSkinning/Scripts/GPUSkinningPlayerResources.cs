@@ -35,19 +35,6 @@ public class GPUSkinningPlayerResources
 
     private GPUSkinningExecuteOncePerFrame executeOncePerFrame = new GPUSkinningExecuteOncePerFrame();
 
-    private float time = 0;
-    public float Time
-    {
-        get
-        {
-            return time;
-        }
-        set
-        {
-            time = value;
-        }
-    }
-
     private static int shaderPropID_GPUSkinning_TextureMatrix = -1;
 
     private static int shaderPropID_GPUSkinning_TextureSize_NumPixelsPerFrame = 0;
@@ -210,12 +197,11 @@ public class GPUSkinningPlayerResources
         }
     }
 
-    public void Update(float deltaTime, GPUSkinningMaterial mtrl)
+    public void Update(GPUSkinningMaterial mtrl)
     {
         if (executeOncePerFrame.CanBeExecute())
         {
             executeOncePerFrame.MarkAsExecuted();
-            time += deltaTime;
             UpdateCullingBounds();
         }
 
