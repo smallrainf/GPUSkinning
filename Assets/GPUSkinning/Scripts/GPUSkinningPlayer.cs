@@ -316,6 +316,11 @@ public class GPUSkinningPlayer
         }
     }
 
+    public void SetColorData(Vector3 color)
+    {
+        res.UpdateColor(mpb, color);
+    }
+
 #if UNITY_EDITOR
     public void Update_Editor(float timeDelta)
     {

@@ -47,6 +47,8 @@ public class GPUSkinningPlayerResources
 
     private static int shaderPropID_GPUSkinning_RootMotion_CrossFade = 0;
 
+    private static int shaderPropID_GPUSkinning_Color = 0;
+
     public GPUSkinningPlayerResources()
     {
         if (shaderPropID_GPUSkinning_TextureMatrix == -1)
@@ -57,6 +59,7 @@ public class GPUSkinningPlayerResources
             shaderPropID_GPUSkinning_RootMotion = Shader.PropertyToID("_GPUSkinning_RootMotion");
             shaderPorpID_GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade = Shader.PropertyToID("_GPUSkinning_FrameIndex_PixelSegmentation_Blend_CrossFade");
             shaderPropID_GPUSkinning_RootMotion_CrossFade = Shader.PropertyToID("_GPUSkinning_RootMotion_CrossFade");
+            shaderPropID_GPUSkinning_Color = Shader.PropertyToID("_GPUSkinning_Color");
         }
     }
 
@@ -212,6 +215,11 @@ public class GPUSkinningPlayerResources
             mtrl.material.SetVector(shaderPropID_GPUSkinning_TextureSize_NumPixelsPerFrame, 
                 new Vector4(anim.textureWidth, anim.textureHeight, anim.bones.Length * 3/*treat 3 pixels as a float3x4*/, 0));
         }
+    }
+
+    public void UpdateColor(MaterialPropertyBlock mpb, Vector3 color)
+    {
+        mpb.SetVector(shaderPropID_GPUSkinning_Color, color);
     }
 
     public void UpdatePlayingData(

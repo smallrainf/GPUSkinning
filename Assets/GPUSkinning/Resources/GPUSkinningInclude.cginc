@@ -31,6 +31,17 @@ UNITY_INSTANCING_BUFFER_START(GPUSkinningProperties2)
 UNITY_INSTANCING_BUFFER_END(GPUSkinningProperties2)
 #endif
 
+UNITY_INSTANCING_BUFFER_START(GPUSkinningProperties3)
+	UNITY_DEFINE_INSTANCED_PROP(fixed3, _GPUSkinning_Color)
+#define _GPUSkinning_Color_arr GPUSkinningProperties3
+UNITY_INSTANCING_BUFFER_END(GPUSkinningProperties3)
+
+inline fixed3 getColor()
+{
+	fixed3 gpuskinning_color = UNITY_ACCESS_INSTANCED_PROP(_GPUSkinning_Color_arr, _GPUSkinning_Color);
+	return gpuskinning_color;
+}
+
 inline float4 indexToUV(float index)
 {
 	int row = (int)(index / _GPUSkinning_TextureSize_NumPixelsPerFrame.x);

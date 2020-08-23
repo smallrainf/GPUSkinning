@@ -21,6 +21,7 @@
 	struct v2f
 	{
 		float2 uv : TEXCOORD0;
+		fixed3 col : TEXCOORD1;
 		float4 vertex : SV_POSITION;
 	};
 
@@ -37,13 +38,15 @@
 
 		o.vertex = UnityObjectToClipPos(pos);
 		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+		o.col = getColor();
 		return o;
 	}
 
 	fixed4 frag(v2f i) : SV_Target
 	{
-		fixed4 col = tex2D(_MainTex, i.uv);
-		return col;
+		fixed4 tex = tex2D(_MainTex, i.uv);
+		fixed3 col = tex.rgb * (1 - tex.a) + tex.rgb * tex.a * i.col;
+		return fixed4(col, 1);
 	}
 	ENDCG
 
@@ -58,7 +61,8 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
-			#pragma multi_compile ROOTON_BLENDOFF ROOTON_BLENDON_CROSSFADEROOTON ROOTON_BLENDON_CROSSFADEROOTOFF ROOTOFF_BLENDOFF ROOTOFF_BLENDON_CROSSFADEROOTON ROOTOFF_BLENDON_CROSSFADEROOTOFF
+			//#pragma multi_compile ROOTON_BLENDOFF ROOTON_BLENDON_CROSSFADEROOTON ROOTON_BLENDON_CROSSFADEROOTOFF ROOTOFF_BLENDOFF ROOTOFF_BLENDON_CROSSFADEROOTON ROOTOFF_BLENDON_CROSSFADEROOTOFF
+			#pragma shader_feature ROOTOFF_BLENDOFF ROOTOFF_BLENDON_CROSSFADEROOTOFF
 			ENDCG
 		}
 	}
