@@ -605,10 +605,7 @@ public class GPUSkinningPlayer
                 }
 
                 jointTransform.localPosition = jointMatrix.MultiplyPoint(Vector3.zero);
-
-                Vector3 jointDir = jointMatrix.MultiplyVector(Vector3.right);
-                Quaternion jointRotation = Quaternion.FromToRotation(Vector3.right, jointDir);
-                jointTransform.localRotation = jointRotation;
+                jointTransform.localRotation = Quaternion.LookRotation(jointMatrix.GetColumn(2), jointMatrix.GetColumn(1));
             }
             else
             {
