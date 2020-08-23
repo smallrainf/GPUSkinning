@@ -10,6 +10,8 @@ public class GPUSkinningClip
 
     public int fps = 0;
 
+    public float speed = 1f;
+
     public GPUSkinningWrapMode wrapMode = GPUSkinningWrapMode.Once;
 
     public GPUSkinningFrame[] frames = null;

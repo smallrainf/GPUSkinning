@@ -40,6 +40,19 @@ public class GPUSkinningPlayer
 
     public event OnAnimEvent onAnimEvent;
 
+    private float playSpeed = 1f;
+    public float PlaySpeed
+    {
+        get
+        {
+            return playSpeed;
+        }
+        set
+        {
+            playSpeed = value;
+        }
+    }
+
     private bool rootMotionEnabled = false;
     public bool RootMotionEnabled
     {
@@ -354,22 +367,7 @@ public class GPUSkinningPlayer
             mr.sharedMaterial = currMtrl.material;
         }
 
-        if (playingClip.wrapMode == GPUSkinningWrapMode.Once)
-        {
-            if (time >= playingClip.length)
-            {
-                time = playingClip.length;
-            }
-            UpdateMaterial(currMtrl);
-        }
-        else if(playingClip.wrapMode == GPUSkinningWrapMode.Loop)
-        {
-            UpdateMaterial(currMtrl);
-        }
-        else
-        {
-            throw new System.NotImplementedException();
-        }
+        UpdateMaterial(currMtrl);
 
         time += timeDelta;
         crossFadeProgress += timeDelta;
@@ -523,14 +521,26 @@ public class GPUSkinningPlayer
 
     private int GetFrameIndex()
     {
-        float time = GetCurrentTime();
-        if (playingClip.length == time)
+        float time = GetCurrentTime() * playingClip.speed * playSpeed;
+
+        if (playingClip.wrapMode == GPUSkinningWrapMode.Once)
         {
-            return GetTheLastFrameIndex_WrapMode_Once(playingClip);
+            if (time >= playingClip.length)
+            {
+                return GetTheLastFrameIndex_WrapMode_Once(playingClip);
+            }
+            else
+            {
+                return GetFrameIndex_WrapMode_Loop(playingClip, time);
+            }
+        }
+        else if (playingClip.wrapMode == GPUSkinningWrapMode.Loop)
+        {
+            return GetFrameIndex_WrapMode_Loop(playingClip, time);
         }
         else
         {
-            return GetFrameIndex_WrapMode_Loop(playingClip, time);
+            throw new System.NotImplementedException();
         }
     }
 
@@ -540,6 +550,8 @@ public class GPUSkinningPlayer
         {
             return 0;
         }
+
+        float lastPlayedTime = this.lastPlayedTime * playingClip.speed * playSpeed;
 
         if (lastPlayedClip.wrapMode == GPUSkinningWrapMode.Once)
         {
